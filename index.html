@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Level Up: Senior Associate</title>
+<style>
+:root{--bg:#071533;--fg:#fff;--mut:#9db8e8;--a:#8fd3ff;--b:#2f6bff;--c:#4cc9ff;--card:#10265e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#071533}}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;overflow-x:hidden}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:5}
+main{max-width:560px;margin:0 auto;padding:28px 18px 48px}
+.tag{color:var(--mut);letter-spacing:.2em;font-size:.8rem;text-transform:uppercase}
+.bar{height:16px;border-radius:99px;background:var(--card);overflow:hidden;margin:18px 0 8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c),var(--b),var(--a));transition:width 2.6s ease}
+#st{color:var(--mut);font-size:.9rem;min-height:1.4em}
+#reveal{opacity:0;transform:translateY(20px) scale(.96);transition:all .8s ease;margin-top:22px}
+#reveal.on{opacity:1;transform:none}
+h1{font-size:clamp(2rem,9vw,3rem);margin:.2em 0;line-height:1.05}
+.old{text-decoration:line-through;color:var(--mut);font-size:1.1rem}
+.new{display:inline-block;margin:10px 0;padding:10px 20px;border-radius:14px;font-weight:800;font-size:1.3rem;color:#06122e;background:linear-gradient(90deg,var(--a),var(--b))}
+.card{background:var(--card);border-radius:18px;padding:16px;margin:16px 0;text-align:left}
+.card p{margin:.4em 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.stats div{background:var(--card);border-radius:14px;padding:12px;font-size:.9rem}
+.stats b{display:block;font-size:1.4rem;color:var(--a)}
+button,a.btn{display:block;width:100%;box-sizing:border-box;margin:10px 0;padding:14px;border:0;border-radius:14px;font-size:1rem;font-weight:700;color:#06122e;background:var(--c);text-decoration:none;cursor:pointer}
+a.btn{background:var(--b);color:#fff}
+.edit{font-size:.75rem;color:var(--mut)}
+#gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<audio id="au" src="song.mp3" loop preload="auto"></audio>
+<div id="gate"><div><div class="tag">Incoming update</div><h1>Something big is installing…</h1><button id="gate-btn">▶ Tap to start the upgrade</button></div></div>
+<main>
+  <div class="tag">System update</div>
+  <h1>Upgrading…</h1>
+  <div class="bar"><i id="fill"></i></div>
+  <div id="st">Installing Senior Associate v2.0</div>
+
+  <section id="reveal">
+    <div class="old">Associate</div><br>
+    <div class="new">⬆ Senior Associate</div>
+    <h1>Congratulations, <span id="nm" contenteditable="true">Sis</span>! 🎉</h1>
+    <p>You didn’t just get promoted. You got <b>upgraded</b>.</p>
+    <div class="stats">
+      <div><b>+100%</b>Hard work</div>
+      <div><b>+∞</b>Pride from us</div>
+      <div><b>MAX</b>Boss energy</div>
+      <div><b>NEW</b>Level unlocked</div>
+    </div>
+    <div class="card">
+      <p>💼 Every late night, every extra mile, every “I’ve got it”: it all paid off.</p>
+      <p>👑 This title was earned. Now go own it, Senior Associate.</p>
+      <p>— With love, Twongirwe</p>
+    </div>
+    <button id="boom">🎊 Celebrate again</button>
+    <button id="snd">🔊 Play fanfare</button>
+    <a class="btn" id="mus" href="#" onclick="var a=document.getElementById('au');a.paused?a.play():a.pause();return false">🎵 Music on/off</a>
+    <div class="edit">Tip: tap her name above to change it.</div>
+  </section>
+</main>
+<script>
+const cv=document.getElementById('cv'),x=cv.getContext('2d');let P=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
+function burst(){const cols=['#8fd3ff','#2f6bff','#4cc9ff','#fff','#6a8cff'];
+for(let i=0;i<160;i++)P.push({x:cv.width/2,y:cv.height*.4,vx:(Math.random()-.5)*14,vy:Math.random()*-13-2,s:4+Math.random()*6,c:cols[i%5],r:Math.random()*6});}
+(function loop(){x.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.y<cv.height+20);
+P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.3;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});
+requestAnimationFrame(loop)})();
+let ac;function fan(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+[523,659,784,1047,784,1047,1319].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;
+const t=ac.currentTime+i*.14;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.4);
+o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.45)})}catch(e){}}
+const msgs=['Installing Senior Associate v2.0','Adding extra confidence…','Loading bigger responsibilities…','Unlocking the corner of the room…','Upgrade complete ✅'];
+let k=0;const st=document.getElementById('st');
+function begin(){document.getElementById('gate').remove();var au=document.getElementById('au');au.volume=.7;au.play().catch(function(){});setTimeout(()=>document.getElementById('fill').style.width='100%',200);
+const iv=setInterval(()=>{k++;st.textContent=msgs[Math.min(k,4)];if(k>=4){clearInterval(iv);
+document.querySelector('h1').textContent='Upgrade complete!';
+document.getElementById('reveal').classList.add('on');burst();}},650);}
+document.getElementById('gate-btn').onclick=begin;
+document.getElementById('boom').onclick=()=>{burst();fan()};
+document.getElementById('snd').onclick=fan;
+</script>
+</body>
+</html>
